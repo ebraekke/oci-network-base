@@ -7,13 +7,11 @@ resource "oci_core_vcn" "this" {
 }
 
 
-/* TODO: make parameterized
 resource "oci_core_nat_gateway" "nat_gateway" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.this.id
   display_name   = "nat_gateway"
 }
-*/
 
 resource "oci_core_internet_gateway" "ig" {  
   compartment_id = var.compartment_ocid
