@@ -9,8 +9,8 @@ output "bastion_subnet_ocid" {
   value = oci_core_subnet.bastion.id
 } 
 
-output "web_subnet_ocid" {
-  value = oci_core_subnet.web.id
+output "app_subnet_ocid" {
+  value = oci_core_subnet.app.id
 } 
 
 output "db_subnet_ocid" {

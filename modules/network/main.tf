@@ -58,7 +58,7 @@ resource "oci_core_security_list" "lbr" {
   }
 
   egress_security_rules {
-    destination = local.web_subnet_prefix
+    destination = local.app_subnet_prefix
     protocol    = local.tcp_protocol
 
     tcp_options {
@@ -68,7 +68,7 @@ resource "oci_core_security_list" "lbr" {
   }
 
   egress_security_rules {
-    destination = local.web_subnet_prefix
+    destination = local.app_subnet_prefix
     protocol    = local.tcp_protocol
 
     tcp_options {
@@ -121,10 +121,27 @@ resource "oci_core_security_list" "bastion" {
     }
   }
 
+  # Rule for managed services
   dynamic "egress_security_rules" {
-    for_each = [22, 1522]
+    # Oracle, MySQL, MongoDB
+    for_each = [1522, 3306, 27017]
     content {
-      destination = var.vcn_cidr
+      destination = local.db_subnet_prefix
+      protocol    = local.tcp_protocol
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
+  # Rule for hosts
+  dynamic "egress_security_rules" {
+    # SSH
+    for_each = [22]
+    content {
+      destination = local.app_subnet_prefix
       protocol    = local.tcp_protocol
 
       tcp_options {
@@ -150,30 +167,28 @@ resource "oci_core_subnet" "bastion" {
   prohibit_public_ip_on_vnic = false
 }
 
-resource "oci_core_route_table" "web" {
+resource "oci_core_route_table" "app" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.this.id
-  display_name   = "web rt"
+  display_name   = "app rt"
 
-/* TODO: make dependent on para
   route_rules {
     destination       = local.anywhere
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_nat_gateway.nat_gateway.id
   }
-*/
 }
 
 
-# WEB 
-
-resource "oci_core_security_list" "web" {
+# APP
+resource "oci_core_security_list" "app" {
   compartment_id = var.compartment_ocid
-  display_name   = "web sec list"
+  display_name   = "app sec list"
   vcn_id         = oci_core_vcn.this.id
 
   # from lbr
   dynamic "ingress_security_rules" {
+    # http, https
     for_each = [80, 443]
     content {
     source   = local.lbr_subnet_prefix
@@ -188,7 +203,8 @@ resource "oci_core_security_list" "web" {
 
   # from bastion
   dynamic "ingress_security_rules" {
-    for_each = [22]
+    # ssh, http, https
+    for_each = [22, 80, 443]
     content {
     source   = local.bastion_subnet_prefix
     protocol = local.tcp_protocol
@@ -202,9 +218,10 @@ resource "oci_core_security_list" "web" {
 
   # to DB
   dynamic "egress_security_rules" {
-    for_each = [1522]
+    # Oracle, MySQL, MongoDB 
+    for_each = [1522, 3306, 27017]
     content {
-      destination = var.vcn_cidr
+      destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
 
       tcp_options {
@@ -215,35 +232,32 @@ resource "oci_core_security_list" "web" {
   }
 }
 
-resource "oci_core_subnet" "web" {
-  cidr_block          = local.web_subnet_prefix
-  display_name        = "web subnet"
+resource "oci_core_subnet" "app" {
+  cidr_block          = local.app_subnet_prefix
+  display_name        = "app subnet"
   compartment_id      = var.compartment_ocid
   vcn_id              = oci_core_vcn.this.id
-  route_table_id      = oci_core_route_table.web.id
+  route_table_id      = oci_core_route_table.app.id
 
   security_list_ids = [
-    oci_core_security_list.web.id,
+    oci_core_security_list.app.id,
   ]
 
-  dns_label                  = "web"
+  dns_label                  = "app"
   prohibit_public_ip_on_vnic = true
 }
 
 # DB
-
 resource "oci_core_route_table" "db" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.this.id
   display_name   = "db rt"
 
-/* TODO: Make dependent on  para 
   route_rules {
     destination       = local.anywhere
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_nat_gateway.nat_gateway.id
   }
-*/
 }
 
 resource "oci_core_security_list" "db" {
@@ -253,7 +267,8 @@ resource "oci_core_security_list" "db" {
 
   # from bastion
   dynamic "ingress_security_rules" {
-    for_each = [1522]
+    # Oracle, MySQL, MogoDB
+    for_each = [1522, 3306, 27017]
     content {
     source   = local.bastion_subnet_prefix
     protocol = local.tcp_protocol
@@ -265,11 +280,12 @@ resource "oci_core_security_list" "db" {
     }
   }
 
-  # from web
+  # from app
   dynamic "ingress_security_rules" {
-    for_each = [1522]
+    # Oracle, MySQL, MogoDB
+    for_each = [1522, 3306, 27017]
     content {
-    source   = local.web_subnet_prefix
+    source   = local.app_subnet_prefix
     protocol = local.tcp_protocol
 
       tcp_options {

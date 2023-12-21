@@ -1,7 +1,19 @@
 
-# Input variables
+# Variables 
+variable "set_name" {
+    description = "The name of or role of this set, used as base for naming, typicall test/dev/qa"
+}
+
+variable "region"               {}
+
+variable "tenancy_ocid"         {}
+
+variable "compartment_ocid"     {
+    description = "ocid of compartment"
+}
+
 variable "vcn_cidr"           { 
-    description = "cidr range for VNC"
+    description = "cidr range for VCN"
     default     = "10.0.0.0/16" 
 }
 
@@ -11,19 +23,9 @@ variable "subnet_cidr_offset" {
 }
 
 ###########################################################################
-# Used for naming output files and objects, incl. for ansible
+# Details related to account/identity (local_provider.tf) and book keeping
 ###########################################################################
-variable "tenant_short_code"    {
-    description = "alias of the tenant"
+variable "oci_cli_profile"      { 
+    default     = "nosearn" 
+    description = "name of oci cli profile used for session based auth"
 }
-variable "set_name"             {
-    description = "name of set"
-}
-
-###########################################################################
-# Details related to account/identity (provider.tf)
-###########################################################################
-variable "oci_cli_profile"  { default = "nosearn" }
-variable "region"           { default = "eu-stockholm-1" }
-variable "tenancy_ocid"     {}
-variable "compartment_ocid" {}

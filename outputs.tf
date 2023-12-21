@@ -10,8 +10,8 @@ output "bastion_subnet_ocid"  {
   value = module.network.bastion_subnet_ocid
 }
 
-output "web_subnet_ocid"  {
-  value = module.network.web_subnet_ocid
+output "app_subnet_ocid"  {
+  value = module.network.app_subnet_ocid
 }
 
 output "db_subnet_ocid"  {

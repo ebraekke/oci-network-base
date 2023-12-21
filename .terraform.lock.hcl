@@ -23,6 +23,7 @@ provider "registry.terraform.io/hashicorp/local" {
 provider "registry.terraform.io/hashicorp/oci" {
   version = "5.23.0"
   hashes = [
+    "h1:7dnfZbB0i76xxCL/Qr5xclbLf7QWD1ozUGshgkB6zrs=",
     "h1:B67wBsqndOuGCinrfYwvSM+V565vAQ7/OO7Sm0VI5+A=",
     "zh:0279b2be39b1eb0b43c232076f6a94a7b908c75825b5d7d88d1ddf29b01cd0d8",
     "zh:0f4d61b08e8aab8500094dcae2b2ca937dde0d76e08d6a1ac039767d5bcf0fae",
