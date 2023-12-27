@@ -1,5 +1,5 @@
 ###########################################################################
-# OUTPUT ocids of subnets
+# OUTPUT ocids of resources
 ###########################################################################
 output "lbr_subnet_ocid" {
   value = oci_core_subnet.lbr.id
