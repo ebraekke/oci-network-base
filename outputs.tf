@@ -17,3 +17,11 @@ output "app_subnet_ocid"  {
 output "db_subnet_ocid"  {
   value = module.network.db_subnet_ocid
 }
+
+output "vnc_ocid" {
+  value = module.network.vcn_ocid
+}
+
+output "endpoint_ocid" {
+  value = module.resmgr.endpoint_ocid
+}

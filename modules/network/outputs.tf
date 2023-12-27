@@ -16,3 +16,7 @@ output "app_subnet_ocid" {
 output "db_subnet_ocid" {
   value = oci_core_subnet.db.id
 } 
+
+output "vcn_ocid" {
+  value = oci_core_vcn.this.id
+}
