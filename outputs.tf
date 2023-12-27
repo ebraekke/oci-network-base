@@ -23,5 +23,5 @@ output "vnc_ocid" {
 }
 
 output "endpoint_ocid" {
-  value = module.resmgr.endpoint_ocid
+  value = module.endpoint.endpoint_ocid
 }

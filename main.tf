@@ -16,11 +16,10 @@ module "bastion" {
     subnet_ocid         = module.network.bastion_subnet_ocid
 }
 
-module "resmgr" {
-    source              = "./modules/resmgr"
+module "endpoint" {
+    source              = "./modules/endpoint"
 
-    endpoint_name       = "${var.set_name}-db-endpoint"
+    endpoint_name       = "${var.set_name}-dbtools-endpoint"
     compartment_ocid    = var.compartment_ocid
-    subnet_ocid         = module.network.bastion_subnet_ocid
-    vcn_ocid            = module.network.vcn_ocid 
+    subnet_ocid         = module.network.db_subnet_ocid
 }
