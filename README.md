@@ -1,8 +1,23 @@
-# oci-network-base
-oci-network-base
+# ebraekke/oci-network-base
 
 
+## Download the latest version of the Resource Manager ready stack from the releases section
+
+Or you can just click the button below.
+
+[![Deploy to Oracle Cloud](https://oci-resourcemanager-plugin.plugins.oci.oraclecloud.com/latest/deploy-to-oracle-cloud.svg)](https://cloud.oracle.com/resourcemanager/stacks/create?zipUrl=https://github.com/ebraekke/oci-network-base/releases/download/v0.9.0-alpha.1/oci-network-base_0.9.0.zip)
+
+## Session based authentication
+
+Provide the name of the session created using `oci cli session autenticate` in the variable `oci_cli_profile`.
+
+## Create
+
+```hcl
 terraform plan --out=oci-network-base.tfplan --var-file=config/vars_arn.tfvars
+
+terraform apply "oci-network-base.tfplan"
+```
 
 ## Resource Manager
 
