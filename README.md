@@ -1,5 +1,7 @@
 # ebraekke/oci-network-base
 
+TODO: Clean up doc and redo section with fw rules, replace generic rules with specific ones for bastion and reverse ips respectively.  
+
 
 ## Download the latest version of the Resource Manager ready stack from the releases section
 
