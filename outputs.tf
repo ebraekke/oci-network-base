@@ -1,5 +1,5 @@
-output "ext_bastion_ocid" {
-  value = module.ext-bastion.bastion_ocid
+output "bastion_ocid" {
+  value = module.bastion.bastion_ocid
 }
 
 output "lbr_subnet_ocid"  {
@@ -18,7 +18,7 @@ output "db_subnet_ocid"  {
   value = module.network.db_subnet_ocid
 }
 
-output "vnc_ocid" {
+output "vcn_ocid" {
   value = module.network.vcn_ocid
 }
 
