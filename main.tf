@@ -8,12 +8,22 @@ module "network" {
     dns_prefix          = var.set_name
 }
 
-module "bastion" {
+## For SSH 
+module "ext-bastion" {
     source              = "./modules/bastion"
     
-    bastion_name        = "${var.set_name}-bastion"
+    bastion_name        = "${var.set_name}-bastion-ext"
     compartment_ocid    = var.compartment_ocid
     subnet_ocid         = module.network.bastion_subnet_ocid
+}
+
+## For use with OCI Console
+module "int-bastion" {
+    source              = "./modules/bastion"
+    
+    bastion_name        = "${var.set_name}-bastion-int"
+    compartment_ocid    = var.compartment_ocid
+    subnet_ocid         = module.network.db_subnet_ocid
 }
 
 module "endpoint" {

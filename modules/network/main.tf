@@ -112,8 +112,9 @@ resource "oci_core_security_list" "bastion" {
   vcn_id         = oci_core_vcn.this.id
 
   ingress_security_rules {
-    source   = local.anywhere
-    protocol = local.tcp_protocol
+    source    = local.anywhere
+    protocol    = local.tcp_protocol
+    description = "From Interweb to Bastion"
 
     tcp_options {
       min = 22
@@ -128,6 +129,7 @@ resource "oci_core_security_list" "bastion" {
     content {
       destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
+      description = "From Bastion to Db"
 
       tcp_options {
         min = egress_security_rules.value
@@ -143,6 +145,7 @@ resource "oci_core_security_list" "bastion" {
     content {
       destination = local.app_subnet_prefix
       protocol    = local.tcp_protocol
+      description = "From Bastion to App"
 
       tcp_options {
         min = egress_security_rules.value
@@ -191,8 +194,9 @@ resource "oci_core_security_list" "app" {
     # http, https
     for_each = [80, 443]
     content {
-    source   = local.lbr_subnet_prefix
-    protocol = local.tcp_protocol
+      source      = local.lbr_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "From Lbr to App"
 
       tcp_options {
         min = ingress_security_rules.value
@@ -206,8 +210,9 @@ resource "oci_core_security_list" "app" {
     # ssh, http, https
     for_each = [22, 80, 443]
     content {
-    source   = local.bastion_subnet_prefix
-    protocol = local.tcp_protocol
+      source   = local.bastion_subnet_prefix
+      protocol = local.tcp_protocol
+      description = "From Bastion to App"
 
       tcp_options {
         min = ingress_security_rules.value
@@ -223,6 +228,7 @@ resource "oci_core_security_list" "app" {
     content {
       destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
+      description = "From App to Db"
 
       tcp_options {
         min = egress_security_rules.value
@@ -267,11 +273,12 @@ resource "oci_core_security_list" "db" {
 
   # from bastion
   dynamic "ingress_security_rules" {
-    # Oracle, MySQL, MogoDB
+    # Oracle, MySQL, MongoDB
     for_each = [1521, 3306, 27017]
     content {
-    source   = local.bastion_subnet_prefix
-    protocol = local.tcp_protocol
+      source      = local.bastion_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "From Bastion to Db"
 
       tcp_options {
         min = ingress_security_rules.value
@@ -282,11 +289,12 @@ resource "oci_core_security_list" "db" {
 
   # from app
   dynamic "ingress_security_rules" {
-    # Oracle, MySQL, MogoDB
+    # Oracle, MySQL, MongoDB
     for_each = [1521, 3306, 27017]
     content {
-    source   = local.app_subnet_prefix
-    protocol = local.tcp_protocol
+      source      = local.app_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "From App to Db"
 
       tcp_options {
         min = ingress_security_rules.value
@@ -294,6 +302,23 @@ resource "oci_core_security_list" "db" {
       }
     }
   }
+
+  # from db
+  dynamic "ingress_security_rules" {
+    # Oracle, MySQL, MongoDB
+    for_each = [1521, 3306, 27017]
+    content {
+      source      = local.db_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "From Db to Db"
+
+      tcp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+
 }
 
 
