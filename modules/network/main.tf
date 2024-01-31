@@ -122,7 +122,7 @@ resource "oci_core_security_list" "bastion" {
   # Rule for managed services
   dynamic "egress_security_rules" {
     # Oracle, MySQL, MongoDB
-    for_each = [1521, 3306, 27017]
+    for_each = [22, 1521, 3306, 27017]
     content {
       destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
@@ -271,7 +271,7 @@ resource "oci_core_security_list" "db" {
   # from bastion
   dynamic "ingress_security_rules" {
     # Oracle, MySQL, MongoDB
-    for_each = [1521, 3306, 27017]
+    for_each = [22, 1521, 3306, 27017]
     content {
       source      = local.bastion_subnet_prefix
       protocol    = local.tcp_protocol
