@@ -316,8 +316,22 @@ resource "oci_core_security_list" "db" {
     }
   }
 
-}
+  # Rule for egress, needed for self managed DB nodes
+  dynamic "egress_security_rules" {
+    # http, https
+    for_each = [80, 443]
+    content {
+      destination = local.anywhere
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From DB to Interweb"
 
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+}
 
 resource "oci_core_subnet" "db" {
   cidr_block          = local.db_subnet_prefix
