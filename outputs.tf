@@ -25,3 +25,7 @@ output "vcn_ocid" {
 output "endpoint_ocid" {
   value = module.endpoint.endpoint_ocid
 }
+
+output "rm_endpoint_ocid" {
+  value = module.rmendpoint.rm_endpoint_ocid
+}
