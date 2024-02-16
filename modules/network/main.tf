@@ -164,7 +164,7 @@ resource "oci_core_subnet" "bastion" {
   ]
 
   dns_label                  = "bastion"
-  prohibit_public_ip_on_vnic = false
+  prohibit_public_ip_on_vnic = true
 }
 
 resource "oci_core_route_table" "app" {
