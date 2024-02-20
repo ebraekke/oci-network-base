@@ -1,6 +1,6 @@
 
 locals {
-    # Network stuff, same sequence as in reference
+  # Network stuff, same sequence as in reference
   bastion_subnet_prefix = cidrsubnet(var.vcn_cidr, var.subnet_cidr_offset, 0)
   db_subnet_prefix      = cidrsubnet(var.vcn_cidr, var.subnet_cidr_offset, 1)
   app_subnet_prefix     = cidrsubnet(var.vcn_cidr, var.subnet_cidr_offset, 2)

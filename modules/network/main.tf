@@ -82,7 +82,7 @@ resource "oci_core_subnet" "lbr" {
   ]
 
   dns_label                  = "lbr"
-  prohibit_public_ip_on_vnic = false
+  prohibit_public_ip_on_vnic = true
 }
 
 
