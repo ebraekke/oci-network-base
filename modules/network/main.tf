@@ -135,7 +135,7 @@ resource "oci_core_security_list" "bastion" {
     }
   }
 
-  # Rule for hosts
+  # Rule for app hosts
   dynamic "egress_security_rules" {
     # SSH
     for_each = [22]
@@ -150,6 +150,23 @@ resource "oci_core_security_list" "bastion" {
       }
     }
   }
+
+  # Rule for ctl or service hosts
+  dynamic "egress_security_rules" {
+    # SSH
+    for_each = [22]
+    content {
+      destination = local.bastion_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From Bastion to Bastion"
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
 }
 
 resource "oci_core_subnet" "bastion" {
