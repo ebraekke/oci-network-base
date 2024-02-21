@@ -103,14 +103,14 @@ resource "oci_core_security_list" "bastion" {
   display_name   = "bastion sec list"
   vcn_id         = oci_core_vcn.this.id
 
-  # from Interweb
+  # from bastion service to ctl or service node(s) in the same network
   dynamic "ingress_security_rules" {
     # ssh
     for_each = [22]
     content {
-      source      = local.anywhere
+      source      = local.bastion_subnet_prefix
       protocol    = local.tcp_protocol
-      description = "${ingress_security_rules.value}: From Interweb to Bastion"
+      description = "${ingress_security_rules.value}: From Bastion to Bastion"
 
       tcp_options {
         min = ingress_security_rules.value
