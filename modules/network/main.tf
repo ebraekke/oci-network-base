@@ -25,10 +25,10 @@ resource "oci_core_route_table" "lbr" {
   vcn_id         = oci_core_vcn.this.id
   display_name   = "lbr rt"
 
-  # TODO: Is this correct? 
   route_rules {
     destination       = local.anywhere
-    network_entity_id = oci_core_internet_gateway.ig.id
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.nat_gateway.id
   }
 }
 
@@ -94,7 +94,8 @@ resource "oci_core_route_table" "bastion" {
 
   route_rules {
     destination       = local.anywhere
-    network_entity_id = oci_core_internet_gateway.ig.id
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.nat_gateway.id
   }
 }
 
