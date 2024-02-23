@@ -167,6 +167,22 @@ resource "oci_core_security_list" "bastion" {
     }
   }
 
+  # Rule for egress, needed for self managed nodes
+  dynamic "egress_security_rules" {
+    # http, https
+    for_each = [80, 443]
+    content {
+      destination = local.anywhere
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From Bastion to Interweb"
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
 }
 
 resource "oci_core_subnet" "bastion" {
@@ -243,6 +259,22 @@ resource "oci_core_security_list" "app" {
       destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
       description = "${egress_security_rules.value}: From App to Db"
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
+  # Rule for egress, needed for self managed nodes
+  dynamic "egress_security_rules" {
+    # http, https
+    for_each = [80, 443]
+    content {
+      destination = local.anywhere
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From App to Interweb"
 
       tcp_options {
         min = egress_security_rules.value
@@ -333,7 +365,7 @@ resource "oci_core_security_list" "db" {
     }
   }
 
-  # Rule for egress, needed for self managed DB nodes
+  # Rule for egress, needed for self managed nodes
   dynamic "egress_security_rules" {
     # http, https
     for_each = [80, 443]
