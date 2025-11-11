@@ -2,6 +2,7 @@
 
 TODO: Clean up doc and redo section with fw rules, replace generic rules with specific ones for bastion and reverse ips respectively.  
 
+TODO: Copy provder.tf from template, include template in repo (file `/provider.tf.4RM`).
 
 ## Download the latest version of the Resource Manager ready stack from the releases section
 
