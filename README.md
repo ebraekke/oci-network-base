@@ -2,7 +2,22 @@
 
 TODO: Clean up doc and redo section with fw rules, replace generic rules with specific ones for bastion and reverse ips respectively.  
 
-TODO: Copy provder.tf from template, include template in repo (file `/provider.tf.4RM`).
+TODO: Copy provider.tf from template, include template in repo (file `/provider.tf.4RM`).
+
+## You must add your own provider file 
+
+Add your provider specification as `local_provider.tf` to the top level directory: 
+```terraform
+# file is outside of source control, hardcode your values
+## DO NOT include in zip file
+provider "oci" {
+#  alias = "local"
+
+  region              = var.region
+  auth                = "SecurityToken"
+  config_file_profile = var.oci_cli_profile
+}
+```
 
 ## Download the latest version of the Resource Manager ready stack from the releases section
 
@@ -17,9 +32,9 @@ Provide the name of the session created using `oci cli session autenticate` in t
 ## Create
 
 ```hcl
-terraform plan --out=oci-network-base.tfplan --var-file=config/vars_arn.tfvars
+tofu plan --out=oci-network-base.tfplan --var-file=config/vars_fra.tfvars
 
-terraform apply "oci-network-base.tfplan"
+tofu apply "oci-network-base.tfplan"
 ```
 
 ## Resource Manager
