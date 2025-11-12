@@ -197,6 +197,7 @@ resource "oci_core_subnet" "bastion" {
     oci_core_security_list.bastion.id,
   ]
 
+  # TODO: evaluate if this a good idea
   dns_label                  = "bastion"
   prohibit_public_ip_on_vnic = true
 }
@@ -352,8 +353,8 @@ resource "oci_core_security_list" "db" {
 
   # within db
   dynamic "ingress_security_rules" {
-    # Oracle, MySQL, MongoDB
-    for_each = [1521, 3306, 27017]
+    # Oracle, MySQL, MongoDB, InnoDB Admin API, MySQL Cluster
+    for_each = [1521, 3306, 27017, 33060, 33061]
     content {
       source      = local.db_subnet_prefix
       protocol    = local.tcp_protocol
