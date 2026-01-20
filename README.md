@@ -31,7 +31,7 @@ Provide the name of the session created using `oci cli session autenticate` in t
 
 ## Create
 
-```hcl
+```shell
 tofu plan --out=oci-network-base.tfplan --var-file=config/vars_fra.tfvars
 
 tofu apply "oci-network-base.tfplan"
