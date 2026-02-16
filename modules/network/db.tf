@@ -51,8 +51,8 @@ resource "oci_core_security_list" "db" {
 
   # within db
   dynamic "ingress_security_rules" {
-    # Oracle, MySQL, MongoDB, InnoDB Admin API, MySQL Cluster
-    for_each = [1521, 3306, 27017, 33060, 33061]
+    # SSH, Oracle, MySQL, MongoDB, InnoDB Admin API, MySQL Cluster
+    for_each = [22, 1521, 3306, 27017, 33060, 33061]
     content {
       source      = local.db_subnet_prefix
       protocol    = local.tcp_protocol
@@ -81,10 +81,10 @@ resource "oci_core_security_list" "db" {
     }
   }
 
-  # InnodB Clutser Related 
+  # InnodB Cluster Related + SSH 
   dynamic "egress_security_rules" {
     # Oracle, MySQL, MongoDB 
-    for_each = [3306, 33060, 33061]
+    for_each = [22, 3306, 33060, 33061]
     content {
       destination = local.db_subnet_prefix
       protocol    = local.tcp_protocol
