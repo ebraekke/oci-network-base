@@ -65,6 +65,22 @@ resource "oci_core_security_list" "db" {
     }
   }
 
+  # within db, autobase
+  dynamic "ingress_security_rules" {
+    # SSH, etcd 
+    for_each = [22, 2379, 2380, 5432, 8008]
+    content {
+      source      = local.db_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "${ingress_security_rules.value}: From PG Db to PG Db"
+
+      tcp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+
   # Rule for egress, needed for self managed nodes
   dynamic "egress_security_rules" {
     # http, https
@@ -81,9 +97,26 @@ resource "oci_core_security_list" "db" {
     }
   }
 
+
+  # Autobase related + SSH  
+  dynamic "egress_security_rules" {
+    # SSH, etcd 
+    for_each = [22, 2379, 2380, 5432, 8008]
+    content {
+      destination = local.db_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From PG Db to PG Db"
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
   # InnodB Cluster Related + SSH 
   dynamic "egress_security_rules" {
-    # Oracle, MySQL, MongoDB 
+    # Oracle, etcd, MySQL, MongoDB 
     for_each = [22, 3306, 33060, 33061]
     content {
       destination = local.db_subnet_prefix

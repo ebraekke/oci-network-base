@@ -26,6 +26,7 @@ variable "subnet_cidr_offset" {
 # Details related to account/identity (local_provider.tf) and book keeping
 ###########################################################################
 variable "oci_cli_profile"      { 
-    default     = "nosefra" 
+    # default     = "nosefra" 
+    default = "DEFAULT"
     description = "name of oci cli profile used for session based auth"
 }

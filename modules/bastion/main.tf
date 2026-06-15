@@ -10,5 +10,5 @@ resource "oci_bastion_bastion" "bastion" {
     # Optional
     client_cidr_block_allow_list  = tolist(["0.0.0.0/0"])       # All
     max_session_ttl_in_seconds    = 10800                       # 3 hrs
-    dns_proxy_status              = "ENABLED"                   # Needed?
+    dns_proxy_status              = "ENABLED"                   # 
 }
