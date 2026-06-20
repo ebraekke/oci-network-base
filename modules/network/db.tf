@@ -33,6 +33,22 @@ resource "oci_core_security_list" "db" {
     }
   }
 
+  # from bastion to PG db
+  dynamic "ingress_security_rules" {
+    # PG, patroni
+    for_each = [22, 6432, 8008]
+    content {
+      source      = local.bastion_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "${ingress_security_rules.value}: From Bastion to PG db"
+
+      tcp_options {
+        min = ingress_security_rules.value
+        max = ingress_security_rules.value
+      }
+    }
+  }
+
   # from app
   dynamic "ingress_security_rules" {
     # Oracle, MySQL, MongoDB
@@ -133,11 +149,11 @@ resource "oci_core_security_list" "db" {
 }
 
 resource "oci_core_subnet" "db" {
-  cidr_block          = local.db_subnet_prefix
-  display_name        = "db subnet"
-  compartment_id      = var.compartment_ocid
-  vcn_id              = oci_core_vcn.this.id
-  route_table_id      = oci_core_route_table.db.id
+  cidr_block     = local.db_subnet_prefix
+  display_name   = "db subnet"
+  compartment_id = var.compartment_ocid
+  vcn_id         = oci_core_vcn.this.id
+  route_table_id = oci_core_route_table.db.id
 
   security_list_ids = [
     oci_core_security_list.db.id,

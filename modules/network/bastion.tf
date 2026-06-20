@@ -66,6 +66,21 @@ resource "oci_core_security_list" "bastion" {
     }
   }
 
+  dynamic "egress_security_rules" {
+    # From Bastion t0oPG db
+    for_each = [22, 6432, 8008]
+    content {
+      destination = local.db_subnet_prefix
+      protocol    = local.tcp_protocol
+      description = "${egress_security_rules.value}: From Bastion to PG db"
+
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
+
   # Rule for app hosts
   dynamic "egress_security_rules" {
     # SSH
