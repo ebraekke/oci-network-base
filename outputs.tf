@@ -18,10 +18,14 @@ output "db_subnet_ocid"  {
   value = module.network.db_subnet_ocid
 }
 
-output "vnc_ocid" {
+output "vcn_ocid" {
   value = module.network.vcn_ocid
 }
 
 output "endpoint_ocid" {
   value = module.endpoint.endpoint_ocid
+}
+
+output "rm_endpoint_ocid" {
+  value = module.rmendpoint.rm_endpoint_ocid
 }
